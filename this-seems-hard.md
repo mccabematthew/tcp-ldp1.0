@@ -154,4 +154,37 @@ Transport Layer and Internet Layer on for you and the hardware does the Network 
 
 ### Chapter 3: IP Addresses. `struct`s, and Data Munging
 
+##### I'm skipping the IPv4 stuff lol.
+basically we ran out of addresses using four octets like `192.0.2.111` because we thought there 
+would not come a time where billions of computers existed. There did.
+
+##### 3.3 `struct`s (skipping a bit of stuff including byte order which will prob be important)
+Finally. Programming.
+
+The data types used by the sockets interface, some of them are tuff to understand.
+
+First is easy, the socket descriptor, type: `int`
+
+It gets weird from there. `struct addrinfo` is used to prep the socket address structures for 
+subsequent use. It's also used in hostname lookups and service name lookups. It'll be make more
+sense in actual usage later, but just remember its one of the first things you call when making
+a connection.
+
+``c
+struct addrinfo {
+    int             ai_flags;       // AI_PASSIVE, AI_CANONNAME, etc.
+    int             ai_family;      // AF_INET, AF_INET6, AF_UNSPEC
+    int             ai_socktype;    // SOCK_STREAM, SOCK_DGRAM
+    int             ai_protocol;    // use 0 for "any"
+    size_t          *ai_addr;       // size of ai_addr in bytes
+    struct sockaddr *ai_addr;       // struct sockaddr_in or _in6
+    char            *ai_canonname;  // full canonical hostname  
+
+struct addrinfo *ai_next;       // linked list, next node
+};
+``
+I'll use this in a bit then call `getaddrinfo()`. It'll return a pointer to anew linked list of
+these structures filled out with all the "goodies" i'll need. One can force it to use IPv4 or v6 
+in the ai_family field, or leave it as `AF_UNSPEC` to use whatever. This is cool because the 
+code can be IP version-agnostic.
 
