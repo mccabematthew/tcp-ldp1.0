@@ -22,7 +22,7 @@ and that refers to packet transmission I believe, and http -- hyper textual tran
 probably for ascii or something (I'll figure it out later when I force myself to write them).
 
 ### Real Notes (per [Beej's](https://beej.us/guide/bgnet/)
-#### What's a Socket
+#### Chapter 2: What's a Socket
 When people say "everything in Unix is a file" they mean that when Unix programs do I/O of any 
 sort, they do it by reading or writing to a file descriptor. A File Descriptor is simply an 
 integer associated with an open file.
@@ -57,3 +57,36 @@ There are all kinds of addresses:
 
 <!--more-->
 Beej's only deals with Internet Sockets!
+
+----
+##### 2.1 Two Types of Internet Sockets
+There are more than two types of Internet Sockets, but this will focus on only two (though it mentions
+"Raw Sockets" which are apparently very powerful and worth a lookup)
+
+So, the two types of sockets are "Stream Sockets" and "Datagram Sockets", which may hereafter be 
+referred to as "`SOCK_STREAM`" and "SOCK_DGRAM`" respectively. Datagram sockets are sometimes
+called "connectionless sockets". 
+
+Stream sockets are reliable two-way connected communication streams. If you output two items into
+the socket in the order "1,2" they will arrive in the order "1,2" at the opposite end. They will
+also be error-free! [useful for my protocol!]
+
+Both telnet and ssh applications use stream sockets, and so do web browsers via HTTP which uses 
+stream sockets to get pages! "Indeed, if you telnet to a website on port 80, and type 
+`GET/HTTP/1.0` and hit RETURN twice, it'll dump the HTML back at you!"
+
+So, how do stream sockets conduct high level quality data transmission? Transmission Control Protocol!
+TCP makes certain that data arrives sequentially and error-free. Commonly referenced in TCP/IP,
+where IP stands for Internet Protocol and deals primarily with Internet routing and is not generally
+responsible for data integrity.
+
+So what about Datagram sockets? why are they connectionless, why unreliable? If you send it,
+it may arrive, it may arrive our of order. If it arrives, the data within the packet will be error-free.
+
+Datagram sockets also use IP for routing but they use UDP rather than TCP.
+
+Why are they connectionless? Because you dont have to maintain an open connection as you do with
+stream sockets. You just build the packet, give it an IP header with destination info, and send it.
+They are generally used when a TCP stack is unavailable or when a few dropped packets here and There
+don't mean anything. examples are `tftp` (trivial file transf protocol), multiplayer games, streaming
+audio, video conferencing, etc. (stop page 7: 190% zoom on lower screen)
